@@ -13,14 +13,14 @@ import javax.annotation.Resource
 /**
  * (User)表控制层
  *
- * @author makejava
+ * @author Jovines
  * @since 2020-04-11 21:24:12
  */
 @RestController
 @RequestMapping("user")
 class UserController(
         /**
-         * 服务对象
+         * 用户
          */
         @Resource
         private val userService: UserService) {

@@ -5,7 +5,7 @@ import com.jovines.lbs_server.entity.User
 /**
  * (User)表服务接口
  *
- * @author makejava
+ * @author Jovines
  * @since 2020-04-11 21:24:11
  */
 interface UserService {

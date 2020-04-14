@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param
 /**
  * (User)表数据库访问层
  *
- * @author makejava
+ * @author Jovines
  * @since 2020-04-11 21:24:10
  */
 interface UserDao {

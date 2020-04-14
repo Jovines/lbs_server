@@ -11,6 +11,11 @@ create table user
     password char(30)
 );
 
-show tables;
-
-select * from user;
+create table lifeCircleMessageItem
+(
+    id      bigint primary key auto_increment,
+    user    bigint,
+    title   varchar(50),
+    content TEXT,
+    time    datetime
+);

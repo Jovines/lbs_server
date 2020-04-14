@@ -7,7 +7,7 @@ import javax.persistence.Id
 /**
  * (User)实体类
  *
- * @author makejava
+ * @author Jovines
  * @since 2020-04-11 21:24:09
  */
 @Entity

@@ -9,13 +9,13 @@ import javax.annotation.Resource
 /**
  * (User)表服务实现类
  *
- * @author makejava
+ * @author Jovines
  * @since 2020-04-11 21:24:11
  */
 @Service("userService")
-class UserServiceImpl : UserService {
-    @Resource
-    private val userDao: UserDao? = null
+class UserServiceImpl
+    (@Resource
+    private val userDao: UserDao): UserService {
 
     /**
      * 通过ID查询单条数据
@@ -24,7 +24,7 @@ class UserServiceImpl : UserService {
      * @return 实例对象
      */
     override fun queryById(phone: Long): User? {
-        return userDao!!.queryById(phone)
+        return userDao.queryById(phone)
     }
 
     /**
@@ -35,7 +35,7 @@ class UserServiceImpl : UserService {
      * @return 对象列表
      */
     override fun queryAllByLimit(offset: Int, limit: Int): List<User?>? {
-        return userDao!!.queryAllByLimit(offset, limit)
+        return userDao.queryAllByLimit(offset, limit)
     }
 
     /**
@@ -45,7 +45,7 @@ class UserServiceImpl : UserService {
      * @return 实例对象
      */
     override fun insert(user: User): User? {
-        userDao!!.insert(user)
+        userDao.insert(user)
         return user
     }
 
@@ -56,7 +56,7 @@ class UserServiceImpl : UserService {
      * @return 实例对象
      */
     override fun update(user: User): User? {
-        userDao!!.update(user)
+        userDao.update(user)
         return this.queryById(user.phone)
     }
 
@@ -67,6 +67,6 @@ class UserServiceImpl : UserService {
      * @return 是否成功
      */
     override fun deleteById(phone: Long): Boolean {
-        return userDao!!.deleteById(phone) > 0
+        return userDao.deleteById(phone) > 0
     }
 }

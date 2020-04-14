@@ -16,6 +16,8 @@
         where phone = #{phone}
     </select>
 
+
+
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UserMap">
         select

@@ -3,9 +3,9 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/lbs?useUnicode=true&amp&characterEncoding=utf-8 #注意设置编码格式
+    url: jdbc:mysql://localhost:3306/lbs?useUnicode=true&amp&characterEncoding=utf-8&serverTimezone=Hongkong #注意设置编码格式
     username: root
-    password: whoami8915
+    password: "[Tree]whoami8915"
 
 # 该配置节点为独立的节点
 mybatis:
