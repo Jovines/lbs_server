@@ -1,14 +1,19 @@
 package com.jovines.lbs_server.controller
 
 import com.jovines.lbs_server.bean.StatusWarp
+import com.jovines.lbs_server.config.IMG_PATH
 import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.service.UserService
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.lang.reflect.InvocationTargetException
 import java.net.PasswordAuthentication
 import java.sql.SQLIntegrityConstraintViolationException
+import java.util.*
 import javax.annotation.Resource
+import javax.servlet.http.HttpServletRequest
 
 /**
  * (User)表控制层
@@ -83,4 +88,40 @@ class UserController(
             StatusWarp(1002, User())
         }
     }
+
+
+    /**
+     * code:
+     *      1000 成功更新
+     *      1001 更新失败
+     */
+    @PostMapping("/changeAvatar", produces = ["application/json;charset=UTF-8"])
+    fun changeAvatar(@RequestParam(value = "image") file: MultipartFile,
+                     @RequestParam("phone") phone: Long,
+                     @RequestParam("password") password: String,
+                     request: HttpServletRequest): StatusWarp<User> {
+        var user = userService.queryById(phone)
+        if (user != null) {
+            if (user.password ?: "" == password) {
+                val avatar = savePicture(file)
+                user = userService.update(User(phone, avatar = avatar))
+            }
+        }
+        return if (user == null) StatusWarp(1001, User()) else StatusWarp(1000, user)
+    }
+
+
+
+    private fun savePicture(file: MultipartFile): String {
+        if (file.isEmpty) return ""
+        var fileName = file.originalFilename // 文件名
+        val suffixName = fileName?.substringAfterLast(".") // 后缀名
+        if (suffixName == null || suffixName.isEmpty()) return ""
+        fileName = "${UUID.randomUUID()}.$suffixName" // 新文件名
+        val dest = File("$IMG_PATH$fileName")
+        if (!dest.parentFile.exists()) dest.parentFile.mkdirs()
+        file.transferTo(dest)
+        return fileName
+    }
+
 }

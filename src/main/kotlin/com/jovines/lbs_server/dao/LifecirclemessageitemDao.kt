@@ -59,4 +59,6 @@ interface LifecirclemessageitemDao {
      * @return 影响行数
      */
     fun deleteById(id: Long?): Int
+
+
 }

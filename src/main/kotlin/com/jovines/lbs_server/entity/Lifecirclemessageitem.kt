@@ -7,16 +7,18 @@ import java.util.*
  * (Lifecirclemessageitem)实体类
  *
  * @author Jovines
- * @since 2020-04-14 11:59:42
+ * @since 2020-04-30 20:43:50
  */
-data class Lifecirclemessageitem(
-        var id: Long? = null,
-        var user: Long? = null,
-        var title: String? = null,
-        var content: String? = null,
-        var time: String? = null) : Serializable {
+class Lifecirclemessageitem
+    (var id: Long? = null,
+    var user: Long? = null,
+    var title: String? = null,
+    var content: String? = null,
+    var time: Date? = null,
+    var lng: Double? = null,
+    var lat: Double? = null): Serializable {
 
     companion object {
-        private const val serialVersionUID = -95785221984917751L
+        private const val serialVersionUID = -40812006033387974L
     }
 }

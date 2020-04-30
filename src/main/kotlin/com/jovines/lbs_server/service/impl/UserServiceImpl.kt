@@ -14,8 +14,8 @@ import javax.annotation.Resource
  */
 @Service("userService")
 class UserServiceImpl
-    (@Resource
-    private val userDao: UserDao): UserService {
+(@Resource
+ private val userDao: UserDao) : UserService {
 
     /**
      * 通过ID查询单条数据
@@ -57,7 +57,7 @@ class UserServiceImpl
      */
     override fun update(user: User): User? {
         userDao.update(user)
-        return this.queryById(user.phone)
+        return this.queryById(user.phone?:0)
     }
 
     /**
