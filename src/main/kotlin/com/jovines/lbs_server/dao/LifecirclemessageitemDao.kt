@@ -1,6 +1,7 @@
 package com.jovines.lbs_server.dao
 
-import com.jovines.lbs_server.entity.Lifecirclemessageitem
+import com.jovines.lbs_server.entity.LifecircleMessageItem
+import com.jovines.lbs_server.entity.User
 import org.apache.ibatis.annotations.Param
 
 /**
@@ -16,7 +17,7 @@ interface LifecirclemessageitemDao {
      * @param id 主键
      * @return 实例对象
      */
-    fun queryById(id: Long?): Lifecirclemessageitem?
+    fun queryById(id: Long?): LifecircleMessageItem?
 
 
     /**
@@ -26,31 +27,31 @@ interface LifecirclemessageitemDao {
      * @param limit 查询条数
      * @return 对象列表
      */
-    fun queryAllByLimit(@Param("offset") offset: Int, @Param("limit") limit: Int): List<Lifecirclemessageitem?>?
+    fun queryAllByLimit(@Param("offset") offset: Int, @Param("limit") limit: Int): List<LifecircleMessageItem?>?
 
     /**
      * 通过实体作为筛选条件查询
      *
-     * @param lifecirclemessageitem 实例对象
+     * @param lifecircleMessageItem 实例对象
      * @return 对象列表
      */
-    fun queryAll(lifecirclemessageitem: Lifecirclemessageitem?): List<Lifecirclemessageitem?>?
+    fun queryAll(lifecircleMessageItem: LifecircleMessageItem?): List<LifecircleMessageItem?>?
 
     /**
      * 新增数据
      *
-     * @param lifecirclemessageitem 实例对象
+     * @param lifecircleMessageItem 实例对象
      * @return 影响行数
      */
-    fun insert(lifecirclemessageitem: Lifecirclemessageitem?): Int
+    fun insert(lifecircleMessageItem: LifecircleMessageItem?): Int
 
     /**
      * 修改数据
      *
-     * @param lifecirclemessageitem 实例对象
+     * @param lifecircleMessageItem 实例对象
      * @return 影响行数
      */
-    fun update(lifecirclemessageitem: Lifecirclemessageitem?): Int
+    fun update(lifecircleMessageItem: LifecircleMessageItem?): Int
 
     /**
      * 通过主键删除数据
@@ -60,5 +61,12 @@ interface LifecirclemessageitemDao {
      */
     fun deleteById(id: Long?): Int
 
+    fun checkNearbyNews(
+            @Param("minLat") minLat: Double,
+            @Param("minLon") minLon: Double,
+            @Param("maxLat") maxLat: Double,
+            @Param("maxLon") maxLon: Double,
+            @Param("time") time: Long
+    ): List<LifecircleMessageItem?>?
 
 }

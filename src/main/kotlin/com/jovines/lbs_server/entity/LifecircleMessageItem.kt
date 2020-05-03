@@ -9,13 +9,13 @@ import java.util.*
  * @author Jovines
  * @since 2020-04-30 20:43:50
  */
-class Lifecirclemessageitem
+class LifecircleMessageItem
     (var id: Long? = null,
     var user: Long? = null,
     var title: String? = null,
     var content: String? = null,
-    var time: Date? = null,
-    var lng: Double? = null,
+    var time: String? = null,
+    var lon: Double? = null,
     var lat: Double? = null): Serializable {
 
     companion object {

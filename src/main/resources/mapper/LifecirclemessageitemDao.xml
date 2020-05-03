@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jovines.lbs_server.dao.LifecirclemessageitemDao">
 
-    <resultMap type="com.jovines.lbs_server.entity.Lifecirclemessageitem" id="LifecirclemessageitemMap">
+    <resultMap type="com.jovines.lbs_server.entity.LifecircleMessageItem" id="LifecirclemessageitemMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="user" column="user" jdbcType="INTEGER"/>
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="time" column="time" jdbcType="TIMESTAMP"/>
-        <result property="lng" column="lng" jdbcType="NUMERIC"/>
+        <result property="lon" column="lon" jdbcType="NUMERIC"/>
         <result property="lat" column="lat" jdbcType="NUMERIC"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="LifecirclemessageitemMap">
         select
-          id, user, title, content, time, lng, lat
+          id, user, title, content, time, lon, lat
         from lbs.lifeCircleMessageItem
         where id = #{id}
     </select>
@@ -23,7 +23,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="LifecirclemessageitemMap">
         select
-          id, user, title, content, time, lng, lat
+          id, user, title, content, time, lon, lat
         from lbs.lifeCircleMessageItem
         limit #{offset}, #{limit}
     </select>
@@ -31,7 +31,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="LifecirclemessageitemMap">
         select
-          id, user, title, content, time, lng, lat
+          id, user, title, content, time, lon, lat
         from lbs.lifeCircleMessageItem
         <where>
             <if test="id != null">
@@ -49,8 +49,8 @@
             <if test="time != null">
                 and time = #{time}
             </if>
-            <if test="lng != null">
-                and lng = #{lng}
+            <if test="lon != null">
+                and lon = #{lon}
             </if>
             <if test="lat != null">
                 and lat = #{lat}
@@ -60,8 +60,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into lbs.lifeCircleMessageItem(user, title, content, time, lng, lat)
-        values (#{user}, #{title}, #{content}, #{time}, #{lng}, #{lat})
+        insert into lbs.lifeCircleMessageItem(user, title, content, time, lon, lat)
+        values (#{user}, #{title}, #{content}, #{time}, #{lon}, #{lat})
     </insert>
 
     <!--通过主键修改数据-->
@@ -80,8 +80,8 @@
             <if test="time != null">
                 time = #{time},
             </if>
-            <if test="lng != null">
-                lng = #{lng},
+            <if test="lon != null">
+                lon = #{lon},
             </if>
             <if test="lat != null">
                 lat = #{lat},
@@ -94,5 +94,16 @@
     <delete id="deleteById">
         delete from lbs.lifeCircleMessageItem where id = #{id}
     </delete>
+
+    <select id="checkNearbyNews" resultMap="LifecirclemessageitemMap">
+        select
+        *
+        from lbs.lifeCircleMessageItem
+        where lat &gt; #{minLat}
+        and lat &lt; #{maxLat}
+        and lon &lt; #{maxLon}
+        and lon &gt; #{minLon}
+        and time &gt; #{time} order by time desc;
+    </select>
 
 </mapper>

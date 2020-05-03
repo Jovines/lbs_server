@@ -8,14 +8,14 @@
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
-        <result property="lng" column="lng" jdbcType="NUMERIC"/>
+        <result property="lon" column="lon" jdbcType="NUMERIC"/>
         <result property="lat" column="lat" jdbcType="NUMERIC"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="UserMap">
         select
-          phone, nickname, password, description, avatar, lng, lat
+          phone, nickname, password, description, avatar, lon, lat
         from lbs.user
         where phone = #{phone}
     </select>
@@ -23,7 +23,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UserMap">
         select
-          phone, nickname, password, description, avatar, lng, lat
+          phone, nickname, password, description, avatar, lon, lat
         from lbs.user
         limit #{offset}, #{limit}
     </select>
@@ -31,7 +31,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="UserMap">
         select
-          phone, nickname, password, description, avatar, lng, lat
+          phone, nickname, password, description, avatar, lon, lat
         from lbs.user
         <where>
             <if test="phone != null">
@@ -49,8 +49,8 @@
             <if test="avatar != null and avatar != ''">
                 and avatar = #{avatar}
             </if>
-            <if test="lng != null">
-                and lng = #{lng}
+            <if test="lon != null">
+                and lon = #{lon}
             </if>
             <if test="lat != null">
                 and lat = #{lat}
@@ -60,8 +60,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="phone" useGeneratedKeys="true">
-        insert into lbs.user(phone,nickname, password, description, avatar, lng, lat)
-        values (#{phone},#{nickname}, #{password}, #{description}, #{avatar}, #{lng}, #{lat})
+        insert into lbs.user(phone,nickname, password, description, avatar, lon, lat)
+        values (#{phone},#{nickname}, #{password}, #{description}, #{avatar}, #{lon}, #{lat})
     </insert>
 
     <!--通过主键修改数据-->
@@ -80,8 +80,8 @@
             <if test="avatar != null and avatar != ''">
                 avatar = #{avatar},
             </if>
-            <if test="lng != null">
-                lng = #{lng},
+            <if test="lon != null">
+                lon = #{lon},
             </if>
             <if test="lat != null">
                 lat = #{lat},
@@ -94,5 +94,15 @@
     <delete id="deleteById">
         delete from lbs.user where phone = #{phone}
     </delete>
+
+    <select id="usersMeetLocationRequirements" resultMap="UserMap">
+        select
+        phone, nickname, password, description, avatar, lon, lat
+        from lbs.user
+        where
+        lat &gt; #{minLat}
+        and lat &lt; #{maxLat}
+        and lon &lt; #{maxLon} and  lon &gt; #{minLon};
+    </select>
 
 </mapper>

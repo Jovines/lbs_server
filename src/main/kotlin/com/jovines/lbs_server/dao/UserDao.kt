@@ -58,4 +58,12 @@ interface UserDao {
      * @return 影响行数
      */
     fun deleteById(phone: Long): Int
+
+    fun usersMeetLocationRequirements(
+            @Param("minLat") minLat: Double,
+            @Param("minLon") minLon: Double,
+            @Param("maxLat") maxLat: Double,
+            @Param("maxLon") maxLon: Double
+    ): List<User?>?
+
 }

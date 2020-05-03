@@ -19,9 +19,9 @@ object LatLonUtil {
     /// <param name="lon">经度</param>
     /// <param name="raidus">半径(米)</param>
     /// <returns></returns>
-    fun GetAround(lat: Double, lon: Double, raidus: Int): DoubleArray {
+    fun getRange(lat: Double, lon: Double, range: Int): DoubleArray {
         val degree = 24901 * 1609 / 360.0
-        val rMile = raidus.toDouble()
+        val rMile = range.toDouble()
         val dpmLat = 1 / degree
         val radiusLat = dpmLat * rMile
         val minLat = lat - radiusLat
@@ -29,24 +29,24 @@ object LatLonUtil {
         val mpdLng = degree * cos(lat * (PI / 180))
         val dpmLng = 1 / mpdLng
         val radiusLng = dpmLng * rMile
-        val minLng = lon - radiusLng
-        val maxLng = lon + radiusLng
-        return doubleArrayOf(minLat, minLng, maxLat, maxLng)
+        val minLon = lon - radiusLng
+        val maxLon = lon + radiusLng
+        return doubleArrayOf(minLat, minLon, maxLat, maxLon)
     }
 
     /// <summary>
     /// 根据提供的两个经纬度计算距离(米)
     /// </summary>
-    /// <param name="lng1">经度1</param>
+    /// <param name="lon1">经度1</param>
     /// <param name="lat1">纬度1</param>
-    /// <param name="lng2">经度2</param>
+    /// <param name="lon2">经度2</param>
     /// <param name="lat2">纬度2</param>
     /// <returns></returns>
-    fun GetDistance(lng1: Double, lat1: Double, lng2: Double, lat2: Double): Double {
+    fun GetDistance(lon1: Double, lat1: Double, lon2: Double, lat2: Double): Double {
         val radLat1 = lat1 * RAD
         val radLat2 = lat2 * RAD
         val a = radLat1 - radLat2
-        val b = (lng1 - lng2) * RAD
+        val b = (lon1 - lon2) * RAD
         var s = 2 * asin(sqrt(sin(a / 2).pow(2.0) +
                 cos(radLat1) * cos(radLat2) * sin(b / 2).pow(2.0)))
         s *= EARTH_RADIUS

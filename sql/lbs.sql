@@ -11,8 +11,8 @@ create table user
     password    char(16),
     description text,
     avatar      text,
-    lng    decimal(10),
-    lat    decimal(10)
+    lon    double,
+    lat    double
 );
 
 create table lifeCircleMessageItem
@@ -22,6 +22,8 @@ create table lifeCircleMessageItem
     title    varchar(50),
     content  TEXT,
     time     datetime,
-    lng    decimal(10),
-    lat    decimal(10)
+    lon    double,
+    lat    double
 );
+
+

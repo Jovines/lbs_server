@@ -14,7 +14,7 @@ class User
  var password: String? = null,
  var description: String? = null,
  var avatar: String? = null,
- var lng: Double? = null,
+ var lon: Double? = null,
  var lat: Double? = null) : Serializable {
 
     companion object {

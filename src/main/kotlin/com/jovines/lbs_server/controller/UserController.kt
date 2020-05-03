@@ -2,15 +2,14 @@ package com.jovines.lbs_server.controller
 
 import com.jovines.lbs_server.bean.StatusWarp
 import com.jovines.lbs_server.config.IMG_PATH
+import com.jovines.lbs_server.dao.UserDao
 import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.service.UserService
+import com.jovines.lbs_server.util.LatLonUtil
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.File
-import java.lang.reflect.InvocationTargetException
-import java.net.PasswordAuthentication
-import java.sql.SQLIntegrityConstraintViolationException
 import java.util.*
 import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
@@ -28,7 +27,10 @@ class UserController(
          * 用户
          */
         @Resource
-        private val userService: UserService) {
+        private val userService: UserService,
+        @Resource
+        private val userDao: UserDao
+) {
 
     /**
      * 通过主键查询单条数据
@@ -111,6 +113,35 @@ class UserController(
     }
 
 
+    @PostMapping("findNearby",
+            produces = ["application/json;charset=UTF-8"],
+            consumes = ["application/x-www-form-urlencoded;charset=UTF-8"])
+    fun findNearby(
+            @RequestParam("phone") phone: Long,
+            @RequestParam("lat") lat: Double,
+            @RequestParam("lon") lon: Double,
+            @RequestParam("range") range: Int
+    ): StatusWarp<List<User?>?> {
+        val doubles = LatLonUtil.getRange(lat, lon, range)
+        val userList = userDao
+                .usersMeetLocationRequirements(doubles[0], doubles[1], doubles[2], doubles[3])
+                ?.filter { it?.phone != phone }
+        return StatusWarp(1000, userList)
+    }
+
+    @PostMapping("updateLocation",
+            produces = ["application/json;charset=UTF-8"],
+            consumes = ["application/x-www-form-urlencoded;charset=UTF-8"])
+    fun updateLocation(
+            @RequestParam("phone") phone: Long,
+            @RequestParam("password") password: String,
+            @RequestParam("lat") lat: Double,
+            @RequestParam("lon") lon: Double): StatusWarp<User> {
+        val update = userService.update(User(phone, lat = lat, lon = lon))
+        return if (update != null) StatusWarp(1000, update)
+        else StatusWarp(1001, User())
+    }
+
 
     private fun savePicture(file: MultipartFile): String {
         if (file.isEmpty) return ""
@@ -123,5 +154,6 @@ class UserController(
         file.transferTo(dest)
         return fileName
     }
+
 
 }
