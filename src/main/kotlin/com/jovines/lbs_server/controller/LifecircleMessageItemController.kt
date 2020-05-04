@@ -1,5 +1,6 @@
 package com.jovines.lbs_server.controller
 
+import com.google.gson.Gson
 import com.jovines.lbs_server.bean.CardMessageReturn
 import com.jovines.lbs_server.bean.StatusWarp
 import com.jovines.lbs_server.dao.LifecirclemessageitemDao
@@ -8,7 +9,10 @@ import com.jovines.lbs_server.entity.LifecircleMessageItem
 import com.jovines.lbs_server.service.LifecirclemessageitemService
 import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
+import com.jovines.lbs_server.util.dateFormat
+import com.jovines.lbs_server.util.savePicture
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import javax.annotation.Resource
 
@@ -99,11 +103,11 @@ class LifecircleMessageItemController(
                     ?.map {
                         it?.run {
                             val userData = filter.filter { phone -> user == phone?.phone }[0]
-                            CardMessageReturn(id, user, title, content,
+                            CardMessageReturn(id, user, title ?: "", content ?: "",
                                     this.time,
-                                    userData?.nickname,
-                                    userData?.description,
-                                    userData?.avatar, lon, lat)
+                                    userData?.nickname ?: "",
+                                    userData?.description ?: "",
+                                    userData?.avatar ?: "", lon, lat)
                         }
                     }
             if (messageList != null && messageList.isNotEmpty()) {
@@ -114,24 +118,34 @@ class LifecircleMessageItemController(
     }
 
 
-//    /**
-//     *
-//     */
-//    @PostMapping("postAMessage",
-//            produces = ["application/json;charset=UTF-8"],
-//            consumes = ["application/x-www-form-urlencoded;charset=UTF-8"])
-//    fun postAMessage(
-//            @RequestParam("phone") phone: Long,
-//            @RequestParam("password") password: String,
-//            @RequestParam("title") title: String,
-//            @RequestParam("content") content: String,
-//            @RequestParam("position") position: String
-//    ): StatusWarp<String> {
-//        val insert: Lifecirclemessageitem? = lifecirclemessageitemService.insert(Lifecirclemessageitem(null, phone, title, content, Date(), position))
-//        return if (insert != null) {
-//            StatusWarp(1000, "成功")
-//        } else StatusWarp(1001, "失败")
-//    }
+    /**
+     *
+     */
+    @PostMapping("postAMessage",
+            produces = ["application/json;charset=UTF-8"])
+    fun postAMessage(
+            @RequestParam("phone") phone: Long,
+            @RequestParam("password") password: String,
+            @RequestParam("title") title: String,
+            @RequestParam("content") content: String,
+            @RequestParam("lat") lat: Double,
+            @RequestParam("lon") lon: Double,
+            @RequestParam("image") files: Array<MultipartFile>
+    ): StatusWarp<String> {
+        val list = mutableListOf<String>()
+        files.forEach {
+            list.add(savePicture(it))
+        }
+        val insert: LifecircleMessageItem? =
+                lifecirclemessageitemService.insert(
+                        LifecircleMessageItem(
+                                null, phone, title, content,
+                                dateFormat.format(Date()), lon, lat,
+                                Gson().toJson(list)))
+        return if (insert != null) {
+            StatusWarp(1000, "成功")
+        } else StatusWarp(1001, "失败")
+    }
 
 
 }

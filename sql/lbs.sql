@@ -11,19 +11,20 @@ create table user
     password    char(16),
     description text,
     avatar      text,
-    lon    double,
-    lat    double
+    lon         double,
+    lat         double
 );
 
 create table lifeCircleMessageItem
 (
-    id       bigint primary key auto_increment,
-    user     bigint,
-    title    varchar(50),
-    content  TEXT,
-    time     datetime,
-    lon    double,
-    lat    double
+    id      bigint primary key auto_increment,
+    user    bigint,
+    title   varchar(50),
+    content TEXT,
+    time    datetime,
+    lon     double,
+    lat     double,
+    images   text
 );
 
 

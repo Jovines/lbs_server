@@ -6,6 +6,7 @@ import com.jovines.lbs_server.dao.UserDao
 import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
+import com.jovines.lbs_server.util.savePicture
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -141,19 +142,4 @@ class UserController(
         return if (update != null) StatusWarp(1000, update)
         else StatusWarp(1001, User())
     }
-
-
-    private fun savePicture(file: MultipartFile): String {
-        if (file.isEmpty) return ""
-        var fileName = file.originalFilename // 文件名
-        val suffixName = fileName?.substringAfterLast(".") // 后缀名
-        if (suffixName == null || suffixName.isEmpty()) return ""
-        fileName = "${UUID.randomUUID()}.$suffixName" // 新文件名
-        val dest = File("$IMG_PATH$fileName")
-        if (!dest.parentFile.exists()) dest.parentFile.mkdirs()
-        file.transferTo(dest)
-        return fileName
-    }
-
-
 }
