@@ -1,6 +1,6 @@
 package com.jovines.lbs_server.service
 
-import com.jovines.lbs_server.entity.LifecircleMessageItem
+import com.jovines.lbs_server.entity.Lifecirclemessageitem
 
 /**
  * (Lifecirclemessageitem)表服务接口
@@ -15,7 +15,7 @@ interface LifecirclemessageitemService {
      * @param id 主键
      * @return 实例对象
      */
-    fun queryById(id: Long?): LifecircleMessageItem?
+    fun queryById(id: Long?): Lifecirclemessageitem?
 
 
         /**
@@ -24,7 +24,7 @@ interface LifecirclemessageitemService {
      * @param id 主键
      * @return 实例对象
      */
-    fun queryByUser(user: Long?): List<LifecircleMessageItem?>?
+    fun queryByUser(user: Long?): List<Lifecirclemessageitem?>?
 
 
 
@@ -35,23 +35,23 @@ interface LifecirclemessageitemService {
      * @param limit 查询条数
      * @return 对象列表
      */
-    fun queryAllByLimit(offset: Int, limit: Int): List<LifecircleMessageItem?>?
+    fun queryAllByLimit(offset: Int, limit: Int): List<Lifecirclemessageitem?>?
 
     /**
      * 新增数据
      *
-     * @param lifecircleMessageItem 实例对象
+     * @param lifecirclemessageitem 实例对象
      * @return 实例对象
      */
-    fun insert(lifecircleMessageItem: LifecircleMessageItem?): LifecircleMessageItem?
+    fun insert(lifecirclemessageitem: Lifecirclemessageitem?): Lifecirclemessageitem?
 
     /**
      * 修改数据
      *
-     * @param lifecircleMessageItem 实例对象
+     * @param lifecirclemessageitem 实例对象
      * @return 实例对象
      */
-    fun update(lifecircleMessageItem: LifecircleMessageItem): LifecircleMessageItem?
+    fun update(lifecirclemessageitem: Lifecirclemessageitem): Lifecirclemessageitem?
 
     /**
      * 通过主键删除数据

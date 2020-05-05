@@ -9,7 +9,7 @@ import java.util.*
  * @author Jovines
  * @since 2020-04-30 20:43:50
  */
-class LifecircleMessageItem
+class Lifecirclemessageitem
     (var id: Long? = null,
     var user: Long? = null,
     var title: String? = null,

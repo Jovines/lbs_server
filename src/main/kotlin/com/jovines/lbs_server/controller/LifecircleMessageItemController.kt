@@ -5,7 +5,7 @@ import com.jovines.lbs_server.bean.CardMessageReturn
 import com.jovines.lbs_server.bean.StatusWarp
 import com.jovines.lbs_server.dao.LifecirclemessageitemDao
 import com.jovines.lbs_server.dao.UserDao
-import com.jovines.lbs_server.entity.LifecircleMessageItem
+import com.jovines.lbs_server.entity.Lifecirclemessageitem
 import com.jovines.lbs_server.service.LifecirclemessageitemService
 import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
@@ -50,7 +50,7 @@ class LifecircleMessageItemController(
      * @return 单条数据
      */
     @GetMapping("selectOne")
-    fun selectOne(id: Long?): LifecircleMessageItem? {
+    fun selectOne(id: Long?): Lifecirclemessageitem? {
         return lifecirclemessageitemService.queryById(id)
     }
 
@@ -63,7 +63,7 @@ class LifecircleMessageItemController(
     fun checkPersonData(
             @RequestParam("userOwner") userOwner: Long,
             @RequestParam("checkUser") checkUser: Long
-    ): StatusWarp<List<LifecircleMessageItem?>?> {
+    ): StatusWarp<List<Lifecirclemessageitem?>?> {
         val user = lifecirclemessageitemDao.queryById(userOwner)
         return if (user != null) {
             StatusWarp(1000, lifecirclemessageitemService.queryByUser(checkUser))
@@ -101,13 +101,14 @@ class LifecircleMessageItemController(
                     ?.filter { userList.contains(it?.user) }
                     //将数据转换成完成返回数据，（带用户信息的）
                     ?.map {
-                        it?.run {
-                            val userData = filter.filter { phone -> user == phone?.phone }[0]
-                            CardMessageReturn(id, user, title ?: "", content ?: "",
-                                    this.time,
+                        it?.let { lifecirclemessageitem ->
+                            val userData = filter.filter { phone -> lifecirclemessageitem.user == phone?.phone }[0]
+                            CardMessageReturn(lifecirclemessageitem.id, lifecirclemessageitem.user, lifecirclemessageitem.title
+                                    ?: "", lifecirclemessageitem.content ?: "",
+                                    lifecirclemessageitem.time,
                                     userData?.nickname ?: "",
                                     userData?.description ?: "",
-                                    userData?.avatar ?: "", lon, lat)
+                                    userData?.avatar ?: "", lifecirclemessageitem.lon, lifecirclemessageitem.lat)
                         }
                     }
             if (messageList != null && messageList.isNotEmpty()) {
@@ -130,15 +131,15 @@ class LifecircleMessageItemController(
             @RequestParam("content") content: String,
             @RequestParam("lat") lat: Double,
             @RequestParam("lon") lon: Double,
-            @RequestParam("image") files: Array<MultipartFile>
+            @RequestParam("images") files: Array<MultipartFile>
     ): StatusWarp<String> {
         val list = mutableListOf<String>()
         files.forEach {
             list.add(savePicture(it))
         }
-        val insert: LifecircleMessageItem? =
+        val insert: Lifecirclemessageitem? =
                 lifecirclemessageitemService.insert(
-                        LifecircleMessageItem(
+                        Lifecirclemessageitem(
                                 null, phone, title, content,
                                 dateFormat.format(Date()), lon, lat,
                                 Gson().toJson(list)))
@@ -146,6 +147,5 @@ class LifecircleMessageItemController(
             StatusWarp(1000, "成功")
         } else StatusWarp(1001, "失败")
     }
-
 
 }

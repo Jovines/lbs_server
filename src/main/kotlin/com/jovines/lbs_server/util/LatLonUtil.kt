@@ -42,7 +42,7 @@ object LatLonUtil {
     /// <param name="lon2">经度2</param>
     /// <param name="lat2">纬度2</param>
     /// <returns></returns>
-    fun GetDistance(lon1: Double, lat1: Double, lon2: Double, lat2: Double): Double {
+    fun getDistance(lon1: Double, lat1: Double, lon2: Double, lat2: Double): Double {
         val radLat1 = lat1 * RAD
         val radLat2 = lat2 * RAD
         val a = radLat1 - radLat2
