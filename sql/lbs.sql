@@ -24,7 +24,13 @@ create table lifeCircleMessageItem
     time    datetime,
     lon     double,
     lat     double,
-    images   text
+    images  text
 );
 
-
+create table viewRecords
+(
+    id bigint primary key auto_increment,
+    messageId bigint,
+    checkUser bigint,
+    time datetime
+);

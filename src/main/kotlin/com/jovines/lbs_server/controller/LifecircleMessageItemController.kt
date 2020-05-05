@@ -5,7 +5,10 @@ import com.jovines.lbs_server.bean.CardMessageReturn
 import com.jovines.lbs_server.bean.StatusWarp
 import com.jovines.lbs_server.dao.LifecirclemessageitemDao
 import com.jovines.lbs_server.dao.UserDao
+import com.jovines.lbs_server.dao.ViewrecordsDao
 import com.jovines.lbs_server.entity.Lifecirclemessageitem
+import com.jovines.lbs_server.entity.User
+import com.jovines.lbs_server.entity.Viewrecords
 import com.jovines.lbs_server.service.LifecirclemessageitemService
 import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
@@ -38,6 +41,9 @@ class LifecircleMessageItemController(
 
         @Resource
         private val userDao: UserDao,
+
+        @Resource
+        private val viewrecordsDao: ViewrecordsDao,
 
         @Resource
         private val lifecirclemessageitemDao: LifecirclemessageitemDao
@@ -108,7 +114,8 @@ class LifecircleMessageItemController(
                                     lifecirclemessageitem.time,
                                     userData?.nickname ?: "",
                                     userData?.description ?: "",
-                                    userData?.avatar ?: "", lifecirclemessageitem.lon, lifecirclemessageitem.lat)
+                                    userData?.avatar
+                                            ?: "", lifecirclemessageitem.lon, lifecirclemessageitem.lat, lifecirclemessageitem.images)
                         }
                     }
             if (messageList != null && messageList.isNotEmpty()) {
@@ -148,4 +155,46 @@ class LifecircleMessageItemController(
         } else StatusWarp(1001, "失败")
     }
 
+    /**
+     * code:
+     *      1000 成功
+     *      1001 账号密码错误
+     *      1002
+     *
+     */
+    @PostMapping("addTimeVisited",
+            produces = ["application/json;charset=UTF-8"],
+            consumes = ["application/x-www-form-urlencoded;charset=UTF-8"])
+    fun addTimeVisited(@RequestParam("phone") phone: Long,
+                       @RequestParam("password") password: String,
+                       @RequestParam("messageId") messageId: Long): StatusWarp<String> {
+        val user = userDao.queryById(phone)
+        if (user == null || user.password != password) return StatusWarp(1001, "账号密码错误")
+        val insert = viewrecordsDao.insert(Viewrecords(null, messageId, phone, Date()))
+        return if (insert > 0) StatusWarp(1000, "成功") else StatusWarp(1002, "未知错误")
+    }
+
+
+    /**
+     * code:
+     *      1000 成功
+     *      1001 账号密码错误
+     *      1002 位置错误
+     *
+     */
+    @PostMapping("getNewsActiveUsers",
+            produces = ["application/json;charset=UTF-8"],
+            consumes = ["application/x-www-form-urlencoded;charset=UTF-8"])
+    fun getNewsActiveUsers(@RequestParam("phone") phone: Long,
+                           @RequestParam("password") password: String,
+                           @RequestParam("messageId") messageId: Long): StatusWarp<List<User>> {
+        val user = userDao.queryById(phone)
+        if (user == null || user.password != password) return StatusWarp(1001, listOf())
+        val listUser = viewrecordsDao.getNewsActiveUsers(Calendar.getInstance().apply {
+            add(Calendar.HOUR, -24)
+        }.timeInMillis, messageId).mapNotNull {
+            userDao.queryById(it)
+        }
+        return StatusWarp(1000, listUser)
+    }
 }
