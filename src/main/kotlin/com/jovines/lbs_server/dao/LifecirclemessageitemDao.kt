@@ -2,6 +2,7 @@ package com.jovines.lbs_server.dao
 
 import com.jovines.lbs_server.entity.Lifecirclemessageitem
 import org.apache.ibatis.annotations.Param
+import java.util.*
 
 /**
  * (Lifecirclemessageitem)表数据库访问层
@@ -65,7 +66,7 @@ interface LifecirclemessageitemDao {
             @Param("minLon") minLon: Double,
             @Param("maxLat") maxLat: Double,
             @Param("maxLon") maxLon: Double,
-            @Param("time") time: Long
+            @Param("time") time: Date
     ): List<Lifecirclemessageitem?>?
 
 }

@@ -2,6 +2,7 @@ package com.jovines.lbs_server.controller
 
 import com.google.gson.Gson
 import com.jovines.lbs_server.bean.CardMessageReturn
+import com.jovines.lbs_server.bean.PersonalMessageDetailsBean
 import com.jovines.lbs_server.bean.StatusWarp
 import com.jovines.lbs_server.dao.LifecirclemessageitemDao
 import com.jovines.lbs_server.dao.UserDao
@@ -50,14 +51,22 @@ class LifecircleMessageItemController(
 ) {
 
     /**
-     * 通过主键查询单条数据
+     * 通过用户名查询自己所发布的消息
      *
-     * @param id 主键
-     * @return 单条数据
      */
-    @GetMapping("selectOne")
-    fun selectOne(id: Long?): Lifecirclemessageitem? {
-        return lifecirclemessageitemService.queryById(id)
+    @PostMapping("queryMessage")
+    fun queryMessage(@RequestParam("phone") phone: Long,
+                  @RequestParam("password") password: String): StatusWarp<List<PersonalMessageDetailsBean?>?>? {
+        val user = userDao.queryById(phone)
+        return if (user != null && user.password == password) {
+            val queryByUser = lifecirclemessageitemService
+                    .queryByUser(phone)
+                    ?.sortedByDescending { it?.time }
+                    ?.map {
+                        PersonalMessageDetailsBean(it?.id,it?.user,it?.title,it?.content,it?.time,it?.lon,it?.lat,it?.images,viewrecordsDao.getNewsActiveUsers(it?.id).size)
+                    }
+            StatusWarp(1000, queryByUser ?: listOf())
+        } else StatusWarp(1001, listOf())
     }
 
     /**
@@ -102,8 +111,8 @@ class LifecircleMessageItemController(
         if (filter != null && filter.isNotEmpty()) {
             //查询符合要求的消息
             val userList = filter.map { it?.phone }
-            val timeInMillis = Calendar.getInstance().apply { add(Calendar.HOUR, -time) }.timeInMillis
-            val messageList = lifecirclemessageitemDao.checkNearbyNews(doubles[0], doubles[1], doubles[2], doubles[3], timeInMillis)
+            val date = Calendar.getInstance().apply { add(Calendar.HOUR, -time) }.time
+            val messageList = lifecirclemessageitemDao.checkNearbyNews(doubles[0], doubles[1], doubles[2], doubles[3], date)
                     ?.filter { userList.contains(it?.user) }
                     //将数据转换成完成返回数据，（带用户信息的）
                     ?.map {
@@ -111,7 +120,7 @@ class LifecircleMessageItemController(
                             val userData = filter.filter { phone -> lifecirclemessageitem.user == phone?.phone }[0]
                             CardMessageReturn(lifecirclemessageitem.id, lifecirclemessageitem.user, lifecirclemessageitem.title
                                     ?: "", lifecirclemessageitem.content ?: "",
-                                    lifecirclemessageitem.time,
+                                    dateFormat.format(lifecirclemessageitem.time),
                                     userData?.nickname ?: "",
                                     userData?.description ?: "",
                                     userData?.avatar
@@ -148,7 +157,7 @@ class LifecircleMessageItemController(
                 lifecirclemessageitemService.insert(
                         Lifecirclemessageitem(
                                 null, phone, title, content,
-                                dateFormat.format(Date()), lon, lat,
+                                Date(), lon, lat,
                                 Gson().toJson(list)))
         return if (insert != null) {
             StatusWarp(1000, "成功")
@@ -190,9 +199,9 @@ class LifecircleMessageItemController(
                            @RequestParam("messageId") messageId: Long): StatusWarp<List<User>> {
         val user = userDao.queryById(phone)
         if (user == null || user.password != password) return StatusWarp(1001, listOf())
-        val listUser = viewrecordsDao.getNewsActiveUsers(Calendar.getInstance().apply {
+        val listUser = viewrecordsDao.getNewsActiveUsers(messageId, Calendar.getInstance().apply {
             add(Calendar.HOUR, -24)
-        }.timeInMillis, messageId).mapNotNull {
+        }.time).mapNotNull {
             userDao.queryById(it)
         }
         return StatusWarp(1000, listUser)

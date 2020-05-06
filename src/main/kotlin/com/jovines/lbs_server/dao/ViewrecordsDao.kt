@@ -1,9 +1,8 @@
 package com.jovines.lbs_server.dao
 
-import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.entity.Viewrecords
 import org.apache.ibatis.annotations.Param
-import org.springframework.web.bind.annotation.RequestParam
+import java.util.*
 
 /**
  * (Viewrecords)表数据库访问层
@@ -61,6 +60,6 @@ interface ViewrecordsDao {
      */
     fun deleteById(id: Long?): Int
 
-    fun getNewsActiveUsers(@Param("time") time: Long,
-                           @Param("messageId") messageId: Long): List<Long>
+    fun getNewsActiveUsers(@Param("messageId") messageId: Long?,
+                           @Param("time") time: Date? = null): List<Long>
 }

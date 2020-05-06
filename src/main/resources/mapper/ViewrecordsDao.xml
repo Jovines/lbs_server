@@ -28,7 +28,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="ViewrecordsMap">
         select
-          id, messageId, checkUser, time
+        id, messageId, checkUser, time
         from lbs.viewRecords
         <where>
             <if test="id != null">
@@ -77,7 +77,15 @@
 
     <select id="getNewsActiveUsers" resultType="java.lang.Long">
         select checkUser
-        from viewRecords where time &gt; #{time} and messageId = #{messageId}
+        from viewRecords
+        <where>
+        <if test="time != null">
+            and time &gt; #{time}
+        </if>
+        <if test="messageId != null">
+            and messageId = #{messageId}
+        </if>
+        </where>
         group by checkUser
         order by count(checkUser) desc;
     </select>

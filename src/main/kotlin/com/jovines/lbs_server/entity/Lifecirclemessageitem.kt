@@ -14,7 +14,7 @@ class Lifecirclemessageitem
     var user: Long? = null,
     var title: String? = null,
     var content: String? = null,
-    var time: String? = null,
+    var time: Date? = null,
     var lon: Double? = null,
     var lat: Double? = null,
     var images:String? = null): Serializable {
