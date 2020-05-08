@@ -1,7 +1,7 @@
 delete user from user where phone != 13110170730;
 
-insert into user(phone, nickname,description, password,avatar, lon, lat)
-VALUES (13180136071, '奥特曼','一个有梦想的奥特曼', 'ajdjj','14-56-27-timg.jpeg' ,109.64738, 30.821785);
+insert into user(phone, nickname,description, password, lon, lat)
+VALUES (13180136071, '奥特曼','一个有梦想的奥特曼', 'ajdjj',109.64738, 30.821785);
 
 insert into user(phone, nickname, password, lon, lat)
 VALUES (4388824878, '超级飞侠', 'ajdjj', 109.6218748, 30.87342875);
@@ -33,8 +33,8 @@ insert into lifeCircleMessageItem(user, title, content, time, lon, lat)
 VALUES (13180136071,'人生在世','走走停停',current_time,109.64738,30.821785) ;
 
 
-insert into lifeCircleMessageItem(user, title, content, time, lon, lat)
-VALUES (13180136071,'深夜感伤','小怪兽去哪了',current_time,109.64738,30.821785) ;
+insert into lifeCircleMessageItem(user, title, content, time)
+VALUES (13180136071,'深夜感伤','小怪兽去哪了',current_time) ;
 
 insert into lifeCircleMessageItem(user, title, content, time, lon, lat)
 VALUES (13180136071,'深夜感伤','今天也是悲伤的一天','2020-05-03 21:47:19',109.64738,30.821785) ;

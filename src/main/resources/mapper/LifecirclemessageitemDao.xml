@@ -106,11 +106,20 @@
         select
         *
         from lbs.lifeCircleMessageItem
-        where lat &gt; #{minLat}
-        and lat &lt; #{maxLat}
-        and lon &lt; #{maxLon}
-        and lon &gt; #{minLon}
-        and time &gt; #{time} order by time desc;
+        <where>
+            <if test="minLat != null and maxLat != null">
+                and lat &gt; #{minLat}
+                and lat &lt; #{maxLat}
+            </if>
+            <if test="maxLon != null and minLon != null">
+                and lon &lt; #{maxLon}
+                and lon &gt; #{minLon}
+            </if>
+            <if test="time != null">
+                and time &gt; #{time}
+            </if>
+        </where>
+         order by time desc;
     </select>
 
 </mapper>

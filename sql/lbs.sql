@@ -29,8 +29,18 @@ create table lifeCircleMessageItem
 
 create table viewRecords
 (
-    id bigint primary key auto_increment,
+    id        bigint primary key auto_increment,
     messageId bigint,
     checkUser bigint,
-    time datetime
+    time      datetime
 );
+
+create table highQualityUser
+(
+    id bigint primary key auto_increment,
+    user bigint,
+    joinTime datetime default current_timestamp,
+    goodReason text
+);
+
+show tables

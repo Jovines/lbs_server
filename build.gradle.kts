@@ -4,6 +4,7 @@ plugins {
     id("org.springframework.boot") version "2.2.6.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     application
+    war
     kotlin("jvm") version "1.3.71"
     kotlin("plugin.spring") version "1.3.71"
     kotlin("plugin.jpa") version "1.3.71"
@@ -16,9 +17,13 @@ application {
 java {
 }
 
+//war{
+//    webAppDirName = "lbs"
+//}
+
 
 group = "com.jovines"
-version = "0.0.1-SNAPSHOT"
+//version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
@@ -33,6 +38,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.2")
     implementation("com.google.code.gson:gson:2.8.6")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

@@ -62,11 +62,11 @@ interface LifecirclemessageitemDao {
     fun deleteById(id: Long?): Int
 
     fun checkNearbyNews(
-            @Param("minLat") minLat: Double,
-            @Param("minLon") minLon: Double,
-            @Param("maxLat") maxLat: Double,
-            @Param("maxLon") maxLon: Double,
-            @Param("time") time: Date
+            @Param("minLat") minLat: Double? = null,
+            @Param("minLon") minLon: Double? = null,
+            @Param("maxLat") maxLat: Double? = null,
+            @Param("maxLon") maxLon: Double? = null,
+            @Param("time") time: Date? = null
     ): List<Lifecirclemessageitem?>?
 
 }

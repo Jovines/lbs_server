@@ -56,14 +56,14 @@ class LifecircleMessageItemController(
      */
     @PostMapping("queryMessage")
     fun queryMessage(@RequestParam("phone") phone: Long,
-                  @RequestParam("password") password: String): StatusWarp<List<PersonalMessageDetailsBean?>?>? {
+                     @RequestParam("password") password: String): StatusWarp<List<PersonalMessageDetailsBean?>?>? {
         val user = userDao.queryById(phone)
         return if (user != null && user.password == password) {
             val queryByUser = lifecirclemessageitemService
                     .queryByUser(phone)
                     ?.sortedByDescending { it?.time }
                     ?.map {
-                        PersonalMessageDetailsBean(it?.id,it?.user,it?.title,it?.content,it?.time,it?.lon,it?.lat,it?.images,viewrecordsDao.getNewsActiveUsers(it?.id).size)
+                        PersonalMessageDetailsBean(it?.id, it?.user, it?.title, it?.content, it?.time, it?.lon, it?.lat, it?.images, viewrecordsDao.getNewsActiveUsers(it?.id).size)
                     }
             StatusWarp(1000, queryByUser ?: listOf())
         } else StatusWarp(1001, listOf())
@@ -109,9 +109,9 @@ class LifecircleMessageItemController(
                 doubles[0], doubles[1], doubles[2], doubles[3])?.filter { it?.phone != phone }
         //如果有用户
         if (filter != null && filter.isNotEmpty()) {
-            //查询符合要求的消息
             val userList = filter.map { it?.phone }
             val date = Calendar.getInstance().apply { add(Calendar.HOUR, -time) }.time
+            //查询符合要求的消息
             val messageList = lifecirclemessageitemDao.checkNearbyNews(doubles[0], doubles[1], doubles[2], doubles[3], date)
                     ?.filter { userList.contains(it?.user) }
                     //将数据转换成完成返回数据，（带用户信息的）
@@ -145,8 +145,8 @@ class LifecircleMessageItemController(
             @RequestParam("password") password: String,
             @RequestParam("title") title: String,
             @RequestParam("content") content: String,
-            @RequestParam("lat") lat: Double,
-            @RequestParam("lon") lon: Double,
+            @RequestParam("lat", required = false) lat: Double?,
+            @RequestParam("lon", required = false) lon: Double?,
             @RequestParam("images") files: Array<MultipartFile>
     ): StatusWarp<String> {
         val list = mutableListOf<String>()

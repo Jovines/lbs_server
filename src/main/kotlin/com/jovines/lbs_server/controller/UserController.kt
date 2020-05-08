@@ -1,8 +1,12 @@
 package com.jovines.lbs_server.controller
 
+import com.jovines.lbs_server.bean.PremiumUsersReturn
 import com.jovines.lbs_server.bean.StatusWarp
 import com.jovines.lbs_server.config.IMG_PATH
+import com.jovines.lbs_server.dao.HighqualityuserDao
+import com.jovines.lbs_server.dao.LifecirclemessageitemDao
 import com.jovines.lbs_server.dao.UserDao
+import com.jovines.lbs_server.entity.Highqualityuser
 import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
@@ -30,7 +34,12 @@ class UserController(
         @Resource
         private val userService: UserService,
         @Resource
-        private val userDao: UserDao
+        private val userDao: UserDao,
+        @Resource
+        private val highqualityuserDao: HighqualityuserDao,
+
+        @Resource
+        private val lifecirclemessageitemDao: LifecirclemessageitemDao
 ) {
 
     /**
@@ -121,12 +130,15 @@ class UserController(
             @RequestParam("phone") phone: Long,
             @RequestParam("lat") lat: Double,
             @RequestParam("lon") lon: Double,
-            @RequestParam("range") range: Int
+            @RequestParam("range") range: Int,
+            @RequestParam("time") time: Int
     ): StatusWarp<List<User?>?> {
         val doubles = LatLonUtil.getRange(lat, lon, range)
+        val date = Calendar.getInstance().apply { add(Calendar.HOUR, -time) }.time
+        val messageList = lifecirclemessageitemDao.checkNearbyNews(time = date)?.map { it?.user }
         val userList = userDao
                 .usersMeetLocationRequirements(doubles[0], doubles[1], doubles[2], doubles[3])
-                ?.filter { it?.phone != phone }
+                ?.filter { it?.phone != phone && messageList?.contains(it?.phone) == true }
         return StatusWarp(1000, userList)
     }
 
@@ -141,5 +153,60 @@ class UserController(
         val update = userService.update(User(phone, lat = lat, lon = lon))
         return if (update != null) StatusWarp(1000, update)
         else StatusWarp(1001, User())
+    }
+
+
+    /**
+     * code：
+     *      1000 请求成功
+     *      1001 账号密码错误
+     *      1002 未知错误
+     *      1003 未提供更改数据
+     */
+    @PostMapping("updateUserInformation",
+            produces = ["application/json;charset=UTF-8"],
+            consumes = ["application/x-www-form-urlencoded;charset=UTF-8"])
+    fun updateUserInformation(@RequestParam("phone") phone: Long,
+                              @RequestParam("password") password: String,
+                              @RequestParam("nickname", required = false) nickname: String?,
+                              @RequestParam("description", required = false) description: String?
+    ): StatusWarp<User> {
+        val checkUser = userDao.queryById(phone)
+        return if (checkUser?.password == password) {
+            var realName = nickname
+            if (nickname != null) {
+                if (nickname.isBlank()) {
+                    val toString = checkUser.phone.toString()
+                    realName = "用户${toString.substring(toString.length - 4, toString.length)}"
+                }
+            }
+            val user = userService.update(User(phone, realName, description = description))
+            if (user != null) {
+                user.password = null
+                StatusWarp(1000, user)
+            } else StatusWarp(1002, User())
+        } else StatusWarp(1001, User())
+    }
+
+    @GetMapping("getPremiumUsers",
+            produces = ["application/json;charset=UTF-8"])
+    fun getPremiumUsers(): StatusWarp<List<PremiumUsersReturn>> {
+        val queryAll = highqualityuserDao.queryAll(Highqualityuser())
+        val list = queryAll
+                ?.mapNotNull {
+                    it?.user?.let { it1 ->
+                        Pair(it, userDao.queryById(it1))
+                    }
+                }?.map {
+                    PremiumUsersReturn(it.first.id, it.first.user,
+                            it.first.jointime, it.first.goodreason,
+                            it.second?.nickname, it.second?.description,
+                            it.second?.avatar, it.second?.lat, it.second?.lon)
+                }
+        return if (list != null) {
+            StatusWarp(1000, list)
+        } else {
+            StatusWarp(1001, listOf())
+        }
     }
 }
