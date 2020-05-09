@@ -209,7 +209,7 @@ class UserController(
                             it.second?.avatar, it.second?.lat, it.second?.lon)
                 }
         list?.forEach {
-            it.messages = lifecirclemessageitemDao.queryAllByLimit(1, 1, it.user)?.mapNotNull { lifecirclemessageitem ->
+            it.messages = lifecirclemessageitemDao.queryAllByLimit(0, 1, it.user)?.mapNotNull { lifecirclemessageitem ->
                 if (lifecirclemessageitem != null)
                     CardMessageReturn(lifecirclemessageitem.id, lifecirclemessageitem.user, lifecirclemessageitem.title
                             ?: "", lifecirclemessageitem.content ?: "",
