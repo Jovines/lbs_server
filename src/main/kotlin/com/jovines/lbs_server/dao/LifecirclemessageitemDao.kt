@@ -27,7 +27,7 @@ interface LifecirclemessageitemDao {
      * @param limit 查询条数
      * @return 对象列表
      */
-    fun queryAllByLimit(@Param("offset") offset: Int, @Param("limit") limit: Int): List<Lifecirclemessageitem?>?
+    fun queryAllByLimit(@Param("offset") offset: Int, @Param("limit") limit: Int, @Param("user") user: Long? = null): List<Lifecirclemessageitem?>?
 
     /**
      * 通过实体作为筛选条件查询
@@ -66,7 +66,8 @@ interface LifecirclemessageitemDao {
             @Param("minLon") minLon: Double? = null,
             @Param("maxLat") maxLat: Double? = null,
             @Param("maxLon") maxLon: Double? = null,
-            @Param("time") time: Date? = null
+            @Param("time") time: Date? = null,
+            @Param("user") user: Long? = null
     ): List<Lifecirclemessageitem?>?
 
 }

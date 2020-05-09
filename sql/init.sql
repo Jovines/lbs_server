@@ -43,5 +43,3 @@ insert into lifeCircleMessageItem(user, title, content, time, lon, lat)
 VALUES (4388824878,'超级飞侠日记','在我超级飞侠的威风之下你们都是弟弟',current_timestamp,109.6218748,30.87342875) ;
 
 select current_timestamp;
-
-

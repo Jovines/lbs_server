@@ -38,6 +38,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.2")
     implementation("com.google.code.gson:gson:2.8.6")
+    implementation ("com.squareup.retrofit2:retrofit:2.7.2")
+    implementation ("com.squareup.retrofit2:converter-gson:2.7.2")
+
+    //这行如果要部署到tomcat上必须要，另外还有App类中的函数也是
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

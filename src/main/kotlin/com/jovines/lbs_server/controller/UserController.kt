@@ -1,8 +1,8 @@
 package com.jovines.lbs_server.controller
 
+import com.jovines.lbs_server.bean.CardMessageReturn
 import com.jovines.lbs_server.bean.PremiumUsersReturn
 import com.jovines.lbs_server.bean.StatusWarp
-import com.jovines.lbs_server.config.IMG_PATH
 import com.jovines.lbs_server.dao.HighqualityuserDao
 import com.jovines.lbs_server.dao.LifecirclemessageitemDao
 import com.jovines.lbs_server.dao.UserDao
@@ -10,11 +10,11 @@ import com.jovines.lbs_server.entity.Highqualityuser
 import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
+import com.jovines.lbs_server.util.dateFormat
 import com.jovines.lbs_server.util.savePicture
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
 import java.util.*
 import javax.annotation.Resource
 import javax.servlet.http.HttpServletRequest
@@ -136,9 +136,14 @@ class UserController(
         val doubles = LatLonUtil.getRange(lat, lon, range)
         val date = Calendar.getInstance().apply { add(Calendar.HOUR, -time) }.time
         val messageList = lifecirclemessageitemDao.checkNearbyNews(time = date)?.map { it?.user }
+//        val highQualityUserList = highqualityuserDao.queryAll(null)?.mapNotNull { it?.user }
         val userList = userDao
                 .usersMeetLocationRequirements(doubles[0], doubles[1], doubles[2], doubles[3])
-                ?.filter { it?.phone != phone && messageList?.contains(it?.phone) == true }
+                ?.filter {
+                    it?.phone != phone
+                            && messageList?.contains(it?.phone) == true
+//                            && highQualityUserList?.contains(it?.phone) == false
+                }
         return StatusWarp(1000, userList)
     }
 
@@ -203,6 +208,19 @@ class UserController(
                             it.second?.nickname, it.second?.description,
                             it.second?.avatar, it.second?.lat, it.second?.lon)
                 }
+        list?.forEach {
+            it.messages = lifecirclemessageitemDao.queryAllByLimit(1, 1, it.user)?.mapNotNull { lifecirclemessageitem ->
+                if (lifecirclemessageitem != null)
+                    CardMessageReturn(lifecirclemessageitem.id, lifecirclemessageitem.user, lifecirclemessageitem.title
+                            ?: "", lifecirclemessageitem.content ?: "",
+                            dateFormat.format(lifecirclemessageitem.time),
+                            it.nickname ?: "",
+                            it.description ?: "",
+                            it.avatar
+                                    ?: "", lifecirclemessageitem.lon, lifecirclemessageitem.lat, lifecirclemessageitem.images)
+                else null
+            }
+        }
         return if (list != null) {
             StatusWarp(1000, list)
         } else {

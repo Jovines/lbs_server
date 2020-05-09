@@ -24,15 +24,21 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="LifecirclemessageitemMap">
         select
-          id, user, title, content, time, lon, lat, images
+        id, user, title, content, time, lon, lat, images
         from lbs.lifeCircleMessageItem
+        <where>
+            <if test="user != null">
+                and user = #{user}
+            </if>
+        </where>
+        order by time desc
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="LifecirclemessageitemMap">
         select
-          id, user, title, content, time, lon, lat, images
+        id, user, title, content, time, lon, lat, images
         from lbs.lifeCircleMessageItem
         <where>
             <if test="id != null">
@@ -118,8 +124,11 @@
             <if test="time != null">
                 and time &gt; #{time}
             </if>
+            <if test="user != null">
+                and user = #{user}
+            </if>
         </where>
-         order by time desc;
+        order by time desc;
     </select>
 
 </mapper>

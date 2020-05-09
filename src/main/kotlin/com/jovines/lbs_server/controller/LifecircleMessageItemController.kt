@@ -4,9 +4,11 @@ import com.google.gson.Gson
 import com.jovines.lbs_server.bean.CardMessageReturn
 import com.jovines.lbs_server.bean.PersonalMessageDetailsBean
 import com.jovines.lbs_server.bean.StatusWarp
+import com.jovines.lbs_server.dao.HighqualityuserDao
 import com.jovines.lbs_server.dao.LifecirclemessageitemDao
 import com.jovines.lbs_server.dao.UserDao
 import com.jovines.lbs_server.dao.ViewrecordsDao
+import com.jovines.lbs_server.entity.Highqualityuser
 import com.jovines.lbs_server.entity.Lifecirclemessageitem
 import com.jovines.lbs_server.entity.User
 import com.jovines.lbs_server.entity.Viewrecords
@@ -15,7 +17,10 @@ import com.jovines.lbs_server.service.UserService
 import com.jovines.lbs_server.util.LatLonUtil
 import com.jovines.lbs_server.util.dateFormat
 import com.jovines.lbs_server.util.savePicture
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import javax.annotation.Resource
@@ -45,6 +50,8 @@ class LifecircleMessageItemController(
 
         @Resource
         private val viewrecordsDao: ViewrecordsDao,
+        @Resource
+        private val highqualityuserDao: HighqualityuserDao,
 
         @Resource
         private val lifecirclemessageitemDao: LifecirclemessageitemDao
@@ -104,15 +111,31 @@ class LifecircleMessageItemController(
             @RequestParam("range") range: Int,
             @RequestParam("time") time: Int
     ): StatusWarp<List<CardMessageReturn?>?> {
+
+        //计算位置
         val doubles = LatLonUtil.getRange(lat, lon, range)
+        //找到在这个位置的所有用户
         val filter = userDao.usersMeetLocationRequirements(
                 doubles[0], doubles[1], doubles[2], doubles[3])?.filter { it?.phone != phone }
+
         //如果有用户
         if (filter != null && filter.isNotEmpty()) {
             val userList = filter.map { it?.phone }
+            val highQualityUsers = highqualityuserDao.queryAll(Highqualityuser())
+                    ?.filter { !userList.contains(it?.user) }
+                    ?.mapNotNull { it?.user }
             val date = Calendar.getInstance().apply { add(Calendar.HOUR, -time) }.time
             //查询符合要求的消息
             val messageList = lifecirclemessageitemDao.checkNearbyNews(doubles[0], doubles[1], doubles[2], doubles[3], date)
+                    //这里将优质用户发送的消息添加进去了
+                    ?.toMutableList()?.apply {
+                        highQualityUsers?.forEach {
+                            lifecirclemessageitemDao.checkNearbyNews(time = date, user = it)?.let { list ->
+                                addAll(list)
+                            }
+                        }
+                    }
+                    ?.sortedByDescending { it?.time }
                     ?.filter { userList.contains(it?.user) }
                     //将数据转换成完成返回数据，（带用户信息的）
                     ?.map {

@@ -15,4 +15,5 @@ data class PremiumUsersReturn(var id: Long? = null,
                               var description: String? = null,
                               var avatar: String? = null,
                               var lon: Double? = null,
-                              var lat: Double? = null)
+                              var lat: Double? = null,
+                              var messages: List<CardMessageReturn>? = null)
