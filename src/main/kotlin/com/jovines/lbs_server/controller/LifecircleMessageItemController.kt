@@ -39,11 +39,6 @@ class LifecircleMessageItemController(
          */
         @Resource
         private val lifecirclemessageitemService: LifecirclemessageitemService,
-        /**
-         * 用户
-         */
-        @Resource
-        private val userService: UserService,
 
         @Resource
         private val userDao: UserDao,
