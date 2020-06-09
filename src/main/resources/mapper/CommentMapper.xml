@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jovines.nest_server.dao.CommentMapper">
+    <resultMap id="BaseResultMap" type="com.jovines.nest_server.entity.Comment">
+        <!--@mbg.generated-->
+        <!--@Table `comment`-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="message_id" jdbcType="BIGINT" property="messageId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, message_id, user_id, content, `time`
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from `comment`
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--@mbg.generated-->
+        delete from `comment`
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.jovines.nest_server.entity.Comment"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into `comment` (message_id, user_id, content)
+        values (#{messageId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.jovines.nest_server.entity.Comment"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into `comment`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">
+                message_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="time != null">
+                `time`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="messageId != null">
+                #{messageId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="time != null">
+                #{time,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.jovines.nest_server.entity.Comment">
+        <!--@mbg.generated-->
+        update `comment`
+        <set>
+            <if test="messageId != null">
+                message_id = #{messageId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="time != null">
+                `time` = #{time,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.jovines.nest_server.entity.Comment">
+        <!--@mbg.generated-->
+        update `comment`
+        set message_id = #{messageId,jdbcType=BIGINT},
+        user_id = #{userId,jdbcType=BIGINT},
+        content = #{content,jdbcType=LONGVARCHAR},
+        `time` = #{time,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="queryCommentsByMessageId" resultMap="BaseResultMap">
+        select *
+        from comment
+        where message_id = #{messageID}
+        order by time desc ;
+    </select>
+</mapper>

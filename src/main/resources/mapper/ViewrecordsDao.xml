@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jovines.lbs_server.dao.ViewrecordsDao">
+<mapper namespace="com.jovines.nest_server.dao.ViewrecordsDao">
 
-    <resultMap type="com.jovines.lbs_server.entity.Viewrecords" id="ViewrecordsMap">
+    <resultMap type="com.jovines.nest_server.entity.Viewrecords" id="ViewrecordsMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="messageid" column="messageId" jdbcType="INTEGER"/>
-        <result property="checkuser" column="checkUser" jdbcType="INTEGER"/>
+        <result property="messageid" column="message_id" jdbcType="INTEGER"/>
+        <result property="checkuser" column="check_user" jdbcType="INTEGER"/>
         <result property="time" column="time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="ViewrecordsMap">
         select
-          id, messageId, checkUser, time
-        from lbs.viewRecords
+          id, message_id, check_user, time
+        from nest.view_records
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ViewrecordsMap">
         select
-          id, messageId, checkUser, time
-        from lbs.viewRecords
+          id, message_id, check_user, time
+        from nest.view_records
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="ViewrecordsMap">
         select
-        id, messageId, checkUser, time
-        from lbs.viewRecords
+        id, message_id, check_user, time
+        from nest.view_records
         <where>
             <if test="id != null">
                 and id = #{id}
             </if>
             <if test="messageid != null">
-                and messageId = #{messageid}
+                and message_id = #{messageid}
             </if>
             <if test="checkuser != null">
-                and checkUser = #{checkuser}
+                and check_user = #{checkuser}
             </if>
             <if test="time != null">
                 and time = #{time}
@@ -48,19 +48,19 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into lbs.viewRecords(messageId, checkUser, time)
+        insert into nest.view_records(message_id, check_user, time)
         values (#{messageid}, #{checkuser}, #{time})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update lbs.viewRecords
+        update nest.view_records
         <set>
             <if test="messageid != null">
-                messageId = #{messageid},
+                message_id = #{messageid},
             </if>
             <if test="checkuser != null">
-                checkUser = #{checkuser},
+                check_user = #{checkuser},
             </if>
             <if test="time != null">
                 time = #{time},
@@ -71,22 +71,26 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from lbs.viewRecords where id = #{id}
+        delete from nest.view_records where id = #{id}
     </delete>
 
 
     <select id="getNewsActiveUsers" resultType="java.lang.Long">
-        select checkUser
-        from viewRecords
+        select check_user
+        from view_records
         <where>
         <if test="time != null">
             and time &gt; #{time}
         </if>
         <if test="messageId != null">
-            and messageId = #{messageId}
+            and message_id = #{messageId}
         </if>
         </where>
-        group by checkUser
-        order by count(checkUser) desc;
+        group by check_user
+        order by count(check_user) desc;
     </select>
+
+    <delete id="deletePassMessageId" >
+        delete from view_records where message_id = #{message_id}
+    </delete>
 </mapper>

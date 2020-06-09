@@ -11,7 +11,7 @@ plugins {
 }
 
 application {
-    mainClassName = "com.jovines.lbs_server.LbsServerApplicationKt"
+    mainClassName = "com.jovines.nest_server.LbsServerApplicationKt"
 }
 
 java {
@@ -43,6 +43,8 @@ dependencies {
 
     //这行如果要部署到tomcat上必须要，另外还有App类中的函数也是
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+
+
     runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

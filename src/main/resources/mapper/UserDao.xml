@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jovines.lbs_server.dao.UserDao">
+<mapper namespace="com.jovines.nest_server.dao.UserDao">
 
-    <resultMap type="com.jovines.lbs_server.entity.User" id="UserMap">
+    <resultMap type="com.jovines.nest_server.entity.User" id="UserMap">
         <result property="phone" column="phone" jdbcType="INTEGER"/>
         <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
@@ -16,7 +16,7 @@
     <select id="queryById" resultMap="UserMap">
         select
           phone, nickname, password, description, avatar, lon, lat
-        from lbs.user
+        from nest.user
         where phone = #{phone}
     </select>
 
@@ -24,7 +24,7 @@
     <select id="queryAllByLimit" resultMap="UserMap">
         select
           phone, nickname, password, description, avatar, lon, lat
-        from lbs.user
+        from nest.user
         limit #{offset}, #{limit}
     </select>
 
@@ -32,7 +32,7 @@
     <select id="queryAll" resultMap="UserMap">
         select
           phone, nickname, password, description, avatar, lon, lat
-        from lbs.user
+        from nest.user
         <where>
             <if test="phone != null">
                 and phone = #{phone}
@@ -60,13 +60,13 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="phone" useGeneratedKeys="true">
-        insert into lbs.user(phone,nickname, password, description, avatar, lon, lat)
+        insert into nest.user(phone,nickname, password, description, avatar, lon, lat)
         values (#{phone},#{nickname}, #{password}, #{description}, #{avatar}, #{lon}, #{lat})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update lbs.user
+        update nest.user
         <set>
             <if test="nickname != null and nickname != ''">
                 nickname = #{nickname},
@@ -92,13 +92,13 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from lbs.user where phone = #{phone}
+        delete from nest.user where phone = #{phone}
     </delete>
 
     <select id="usersMeetLocationRequirements" resultMap="UserMap">
         select
         phone, nickname, password, description, avatar, lon, lat
-        from lbs.user
+        from nest.user
         where
         lat &gt; #{minLat}
         and lat &lt; #{maxLat}

@@ -1,15 +1,15 @@
 server:
-  port: 9899
+  port: 9894
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/lbs?useUnicode=true&amp&characterEncoding=utf-8&serverTimezone=Hongkong #注意设置编码格式
+    url: jdbc:mysql://localhost:3306/nest?useUnicode=true&amp&characterEncoding=utf-8&serverTimezone=Hongkong #注意设置编码格式
     username: root
     password: "whoami8915"
 
 # 该配置节点为独立的节点
 mybatis:
   mapper-locations: classpath:mapper/*.xml  # 注意:一定要对应mapper映射xml文件的所在路径
-  type-aliases-package: com.jovines.lbs_server.entity  # 注意:对应实体类的路径
+  type-aliases-package: com.jovines.nest_server.entity  # 注意:对应实体类的路径
   configuration:
     map-underscore-to-camel-case: true # 数据库字段下划线自动转驼峰

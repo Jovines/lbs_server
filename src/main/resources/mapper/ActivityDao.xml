@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jovines.nest_server.dao.ActivityDao">
+    <resultMap id="BaseResultMap" type="com.jovines.nest_server.entity.Activity">
+        <!--@mbg.generated-->
+        <!--@Table activity-->
+        <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+        <result column="front_cover" jdbcType="LONGVARCHAR" property="frontCover"/>
+        <result column="expired" javaType="INT" property="expired"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, activity_name, content, `time`, front_cover
+    </sql>
+    <insert id="insert" parameterType="com.jovines.nest_server.entity.Activity">
+        <!--@mbg.generated-->
+        insert into activity (id, activity_name, content,
+        `time`, front_cover)
+        values (#{id,jdbcType=BIGINT}, #{activityName,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR},
+        #{time,jdbcType=TIMESTAMP}, #{frontCover,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.jovines.nest_server.entity.Activity">
+        <!--@mbg.generated-->
+        insert into activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="activityName != null">
+                activity_name,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="time != null">
+                `time`,
+            </if>
+            <if test="frontCover != null">
+                front_cover,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="activityName != null">
+                #{activityName,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="time != null">
+                #{time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="frontCover != null">
+                #{frontCover,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getUnexpiredEvents" resultMap="BaseResultMap">
+        select *
+        from activity
+        where expired != 1;
+    </select>
+</mapper>

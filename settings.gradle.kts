@@ -1,1 +1,1 @@
-rootProject.name = "lbs_server"
+rootProject.name = "nest_server"

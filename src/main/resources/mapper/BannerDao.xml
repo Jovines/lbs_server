@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jovines.nest_server.dao.BannerDao">
+
+    <resultMap type="com.jovines.nest_server.entity.Banner" id="BannerMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="frontcover" column="front_cover" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BannerMap">
+        select
+          id, front_cover
+        from nest.banner
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BannerMap">
+        select
+          id, front_cover
+        from nest.banner
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BannerMap">
+        select
+          id, front_cover
+        from nest.banner
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="frontcover != null and frontcover != ''">
+                and front_cover = #{frontcover}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="" useGeneratedKeys="true">
+        insert into nest.banner(id, front_cover)
+        values (#{id}, #{frontcover})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update nest.banner
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="frontcover != null and frontcover != ''">
+                front_cover = #{frontcover},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from nest.banner where id = #{id}
+    </delete>
+
+</mapper>

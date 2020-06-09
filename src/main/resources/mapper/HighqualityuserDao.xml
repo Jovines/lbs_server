@@ -1,35 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jovines.lbs_server.dao.HighqualityuserDao">
+<mapper namespace="com.jovines.nest_server.dao.HighqualityuserDao">
 
-    <resultMap type="com.jovines.lbs_server.entity.Highqualityuser" id="HighqualityuserMap">
+    <resultMap type="com.jovines.nest_server.entity.Highqualityuser" id="HighqualityuserMap">
+        <!--@mbg.generated-->
+        <!--@Table high_quality_user-->
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="user" column="user" jdbcType="INTEGER"/>
-        <result property="jointime" column="joinTime" jdbcType="TIMESTAMP"/>
+        <result property="jointime" column="join_time" jdbcType="TIMESTAMP"/>
         <result property="goodreason" column="goodReason" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="HighqualityuserMap">
         select
-          id, user, joinTime, goodReason
-        from lbs.highQualityUser
+          id, user, join_time, goodReason
+        from nest.high_quality_user
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="HighqualityuserMap">
         select
-          id, user, joinTime, goodReason
-        from lbs.highQualityUser
+          id, user, join_time, goodReason
+        from nest.high_quality_user
         limit #{offset}, #{limit}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="HighqualityuserMap">
         select
-          id, user, joinTime, goodReason
-        from lbs.highQualityUser
+          id, user, join_time, goodReason
+        from nest.high_quality_user
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -38,7 +40,7 @@
                 and user = #{user}
             </if>
             <if test="jointime != null">
-                and joinTime = #{jointime}
+                and join_time = #{jointime}
             </if>
             <if test="goodreason != null and goodreason != ''">
                 and goodReason = #{goodreason}
@@ -48,19 +50,19 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into lbs.highQualityUser(user, joinTime, goodReason)
+        insert into nest.high_quality_user(user, join_time, goodReason)
         values (#{user}, #{jointime}, #{goodreason})
     </insert>
 
     <!--通过主键修改数据-->
     <update id="update">
-        update lbs.highQualityUser
+        update nest.high_quality_user
         <set>
             <if test="user != null">
                 user = #{user},
             </if>
             <if test="jointime != null">
-                joinTime = #{jointime},
+                join_time = #{jointime},
             </if>
             <if test="goodreason != null and goodreason != ''">
                 goodReason = #{goodreason},
@@ -71,7 +73,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from lbs.highQualityUser where id = #{id}
+        delete from nest.high_quality_user where id = #{id}
     </delete>
 
 </mapper>
